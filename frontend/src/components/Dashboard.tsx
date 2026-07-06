@@ -25,21 +25,33 @@ export default function Dashboard() {
     navigate(`/tree/${id}`)
   }
 
-  const handleImport = () => fileInputRef.current?.click()
+  const handleImportClick = () => fileInputRef.current?.click()
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
     try {
-      const tree = await api.importGedcom(file)
-      await useTreeStore.getState().loadTrees()
-      useTreeStore.getState().setCurrentTree(tree.id)
-      navigate(`/tree/${tree.id}`)
+      if (file.name.endsWith('.gnlgy')) {
+        const trees = await api.importNative(file)
+        await useTreeStore.getState().loadTrees()
+        if (trees?.length > 0) {
+          useTreeStore.getState().setCurrentTree(trees[0].id)
+          navigate(`/tree/${trees[0].id}`)
+        }
+      } else {
+        const tree = await api.importGedcom(file)
+        await useTreeStore.getState().loadTrees()
+        useTreeStore.getState().setCurrentTree(tree.id)
+        navigate(`/tree/${tree.id}`)
+      }
     } catch {
-      alert("Erreur lors de l'import du fichier GEDCOM.")
+      alert("Erreur lors de l'import du fichier.")
     }
     e.target.value = ''
   }
+
+  const handleExportAll = () => api.exportNativeAll()
+  const handleExportTree = (treeId: string, treeName: string) => api.exportNative(treeId, treeName)
 
   const personCount = (treeId: string) => {
     const tree = trees.find((t) => t.id === treeId)
@@ -63,9 +75,13 @@ export default function Dashboard() {
       ) : (
       <div className="container">
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12, marginBottom: 24 }}>
-          <button className="btn" onClick={handleImport}>
+          <button className="btn" onClick={handleImportClick}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-            Importer GEDCOM
+            Importer
+          </button>
+          <button className="btn" onClick={handleExportAll}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Exporter tout
           </button>
           <button className="btn btn-primary" onClick={() => setShowNew(true)}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -73,7 +89,7 @@ export default function Dashboard() {
           </button>
         </div>
 
-        <input ref={fileInputRef} type="file" accept=".ged,.GED" onChange={handleFileChange} style={{ display: 'none' }} />
+        <input ref={fileInputRef} type="file" accept=".ged,.GED,.gnlgy" onChange={handleFileChange} style={{ display: 'none' }} />
 
         {showNew && (
           <div className="card" style={{ padding: 24, marginBottom: 24, display: 'flex', gap: 12, alignItems: 'center' }}>
@@ -106,11 +122,12 @@ export default function Dashboard() {
                 <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 4 }}>{tree.name}</div>
                 <div style={{ fontSize: 14, color: 'var(--text-secondary)' }}>
                   {personCount(tree.id)} personne{personCount(tree.id) !== 1 ? 's' : ''}
-                  {' · '}Créé le {new Date(tree.createdAt).toLocaleDateString('fr-FR')}
+                  {' · '}Créé le {new Date(tree.createdAt).toLocaleString('fr-FR')}
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
                 <button className="btn btn-primary btn-sm" onClick={() => { setCurrentTree(tree.id); navigate(`/tree/${tree.id}`) }}>Ouvrir</button>
+                <button className="btn btn-sm" onClick={() => handleExportTree(tree.id, tree.name)}>Exporter</button>
                 <button className="btn btn-sm btn-danger" onClick={() => setDeleteId(tree.id)}>Supprimer</button>
               </div>
             </div>

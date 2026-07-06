@@ -1,23 +1,23 @@
-# Généalogie
+# 🌳 Généalogie
 
-Je ne trouvais aucune application d'arbre généalogique qui tenait la route, alors j'ai fait la mienne
+Je ne trouvais aucune application d'arbre généalogique moderne, fluide ou simplement agréable à utiliser visuellement. Alors j'ai développé ma propre solution : une application de bureau complète, propre, et sans fioritures.
 
-![Aperçu](screenshot.png)
+## 🏗️ Architecture
 
-## Architecture
+Encapsuler une stack Web moderne dans une application de bureau native via Electron,  backend local robuste en Java pour gérer la logique lourde et les exports.
 
 ```
 ┌──────────────────────────────────────────┐
 │              Electron Window             │
 │  ┌────────────────────────────────────┐  │
-│  │      React + Vite + Tailwind       │  │
-│  │  (frontend/)                       │  │
+│  │       React + Vite + Tailwind      │  │
+│  │   (frontend/)                      │  │
 │  └──────────────┬─────────────────────┘  │
 │                 │ HTTP (localhost)       │
 │  ┌──────────────▼─────────────────────┐  │
-│  │      Spring Boot 3 (backend/)      │  │
-│  │  API REST /api/*                   │  │
-│  │  Persistance JSON ~/.genealogie/   │  │
+│  │       Spring Boot 3 (backend/)     │  │
+│  │   API REST /api/*                  │  │
+│  │   Persistance JSON ~/.genealogie/  │  │
 │  └────────────────────────────────────┘  │
 └──────────────────────────────────────────┘
 ```
@@ -26,113 +26,97 @@ Je ne trouvais aucune application d'arbre généalogique qui tenait la route, al
 - **Frontend** : React 19, TypeScript, Vite, Tailwind CSS 4, Zustand
 - **Desktop** : Electron 33
 
-## Prérequis
+## 🛠️ Prérequis
 
-- **Java 21+** (JRE, pas besoin du JDK — le backend est pré-compilé)
+- **Java 21+** (Le JRE suffit, j'ai pré-compilé le backend)
 - **Node.js 18+**
 
-## Installation & Utilisation
+## 🚀 Installation & Lancement rapide
 
 ```bash
-# 1. Cloner
+# 1. Cloner le projet
 git clone https://github.com/<votre-user>/genealogie.git
 cd genealogie
 
-# 2. Installer les dépendances
+# 2. Installer (Front & Desktop)
 cd frontend && npm install && cd ..
 cd electron && npm install && cd ..
 
-# 3. Build complet (frontend + backend JAR)
+# 3. Lancer le build complet (Frontend + JAR Backend)
 npm run build
 
-# 4. Lancer l'application
+# 4. Démarrer l'application
 npm start
 ```
 
-L'application s'ouvre dans une fenêtre Electron autonome.
+## 💻 Développement
 
-## Développement
-
-Trois terminaux à lancer en parallèle :
+Mode developpement :
 
 ```bash
-# Terminal 1 — Backend Spring Boot (port 8080)
+# Terminal 1 : Backend Spring Boot (port 8080)
 cd backend && mvn spring-boot:run
 
-# Terminal 2 — Frontend Vite HMR (port 5173)
+# Terminal 2 : Frontend Vite avec HMR (port 5173)
 cd frontend && npm run dev
 
-# Terminal 3 — Electron en mode dev (pointe sur Vite)
+# Terminal 3 : Fenêtre Electron en direct sur Vite
 cd electron && GENEALOGIE_DEV=true npm start
 ```
 
-Le mode développement utilise le Hot Module Replacement de Vite : les modifications CSS/React sont visibles instantanément.
+Utilisation du Hot Module Replacement (HMR) de Vite, chaque modification de style ou de composant React est visible instantanément dans Electron.
 
-## Build de production
+### Build de production
+
+Pour packager l'application proprement, mon script racine compile le front, génère le JAR exécutable et rassemble le tout dans le dossier `electron/` :
 
 ```bash
 npm run build
 ```
 
-Ce script :
-1. Compile le frontend React (`frontend/`)
-2. Compile le backend Spring Boot en JAR (`backend/`)
-3. Copie le JAR dans `electron/`
+## 💾 Stockage des données
 
-## Persistance
+Pas de base de données lourde à installer. Les arbres généalogiques sont stockés localement, au format JSON, directement dans le dossier utilisateur :
 
-Les arbres généalogiques sont stockés dans `~/.genealogie/trees.json` (format JSON).
+```
+~/.genealogie/trees.json
+```
+Le format .gnlgy : Format natif JSON embarquant l'intégralité d'un arbre (personnes, familles, positions, photos, notes) sans perte — idéal pour sauvegarde et transfert entre sessions.
 
-## Fonctionnalités
+C'est transparent et facile à sauvegarder.
 
-- Création et gestion d'arbres généalogiques multiples
-- Ajout de personnes, familles, conjoints, enfants, parents, fratrie
-- Placement libre des nœuds par glisser-déposer
-- Auto-layout des arbres
-- Liens familiaux visuels (parents → enfants, unions)
-- Export GEDCOM
-- Thème sombre natif
-- Interface en français
+## ✨ Fonctionnalités
 
-## Structure du projet
+- **Gestion multi-arbres** : Tu peux créer et gérer plusieurs généalogies en parallèle.
+- **Édition intuitive** : Ajout rapide de personnes, familles, conjoints, enfants, parents et fratries.
+- **Placement libre** : Tu peux glisser-déposer les nœuds où tu veux sur la grille.
+- **Auto-layout** : J'ai intégré un algorithme pour aligner et positionner l'arbre automatiquement si besoin.
+- **Export GEDCOM** : Ton arbre reste compatible avec les autres logiciels du marché.
+- **Format natif .gnlgy** : Export/import complet avec positions, photos, notes — aucune perte.
+- **Interface propre** : Thème sombre natif et interface entièrement en français.
+
+## 📂 Organisation du code
 
 ```
 genealogie/
-├── backend/                     # Spring Boot (Java)
+├── backend/                  # Logique Java (Spring Boot)
 │   └── src/main/java/com/genealogie/
-│       ├── controller/          # REST API
-│       ├── model/               # Entités
-│       ├── store/               # Persistance
-│       ├── io/                  # GEDCOM import/export
-│       └── layout/              # Auto-layout
-├── frontend/                    # React + Vite (TypeScript)
+│       ├── controller/          # Endpoints de l'API REST
+│       ├── model/               # Structures de données
+│       ├── store/               # Gestion de la persistance JSON
+│       ├── io/                  # Moteur d'import/export GEDCOM
+│       └── layout/              # Algo d'auto-layout
+├── frontend/                 # Interface utilisateur (React + Vite)
 │   └── src/
-│       ├── components/          # Composants React
+│       ├── components/          # Composants UI
 │       ├── hooks/               # Hooks personnalisés
-│       ├── store/               # Zustand store
-│       ├── utils/               # Utilitaires
+│       ├── store/               # Store global (Zustand)
 │       └── types/               # Types TypeScript
-├── electron/                    # Application de bureau
-├── scripts/                     # Scripts de build
-├── package.json                 # Scripts racine
-└── README.md
+├── electron/                 # Wrapper Desktop (process principal, cycle de vie)
+├── scripts/                  # Scripts d'automatisation de build
+└── package.json              # Scripts globaux d'orchestration
 ```
 
-## Stack technique
+---
 
-| Couche | Technologie |
-|--------|------------|
-| Desktop | Electron 33 |
-| Frontend | React 19, TypeScript, Vite 6, Tailwind CSS 4 |
-| State | Zustand 5 |
-| Backend | Spring Boot 3.3.5, Java 21+ |
-| Persistance | Gson (fichier JSON) |
-| Build | Maven, Vite, electron-builder |
-
-## Licence
-
-MIT
-
-## Auteur
-
-**Maxime**
+Fait avec ☕ par **Maxime** — Distribué sous licence **MIT**.

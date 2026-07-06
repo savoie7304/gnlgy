@@ -2,12 +2,13 @@ interface Props {
   onAddPerson: () => void
   onAddFamily: () => void
   onExport: () => void
+  onExportNative: () => void
   onBack: () => void
   treeName: string
 }
 
 export default function Toolbar({
-  onAddPerson, onAddFamily, onExport, onBack, treeName,
+  onAddPerson, onAddFamily, onExport, onExportNative, onBack, treeName,
 }: Props) {
   return (
     <div className="toolbar">
@@ -34,7 +35,11 @@ export default function Toolbar({
       <div className="toolbar-group">
         <button className="btn btn-sm" onClick={onExport} title="Exporter GEDCOM">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Export GEDCOM
+          GEDCOM
+        </button>
+        <button className="btn btn-sm" onClick={onExportNative} title="Exporter .gnlgy">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          .gnlgy
         </button>
       </div>
     </div>

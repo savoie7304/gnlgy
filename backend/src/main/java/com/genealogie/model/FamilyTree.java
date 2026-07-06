@@ -1,6 +1,6 @@
 package com.genealogie.model;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -18,17 +18,17 @@ public class FamilyTree {
     private String updatedAt;
 
     public FamilyTree() {
-        this.people = new HashMap<>();
-        this.families = new HashMap<>();
-        this.personPositions = new HashMap<>();
+        this.people = new LinkedHashMap<>();
+        this.families = new LinkedHashMap<>();
+        this.personPositions = new LinkedHashMap<>();
     }
 
     public FamilyTree(String id, String name) {
         this.id = id;
         this.name = name;
-        this.people = new HashMap<>();
-        this.families = new HashMap<>();
-        this.personPositions = new HashMap<>();
+        this.people = new LinkedHashMap<>();
+        this.families = new LinkedHashMap<>();
+        this.personPositions = new LinkedHashMap<>();
     }
 
     public String getId() { return id; }

@@ -6,12 +6,16 @@ import com.genealogie.layout.TreeLayoutEngine;
 import com.genealogie.model.*;
 import com.genealogie.store.IdGenerator;
 import com.genealogie.store.TreeStore;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -205,6 +209,62 @@ public class TreeController {
     public ResponseEntity<Void> clearPosition(@PathVariable String treeId, @PathVariable String personId) {
         store.clearPersonPosition(treeId, personId);
         return ResponseEntity.noContent().build();
+    }
+
+    // === Native .gnlgy ===
+
+    @GetMapping("/export/native")
+    public ResponseEntity<Map<String, Object>> exportNativeAll() {
+        List<FamilyTree> all = store.getTrees();
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("format", "gnlgy");
+        payload.put("version", 1);
+        payload.put("trees", all);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"sauvegarde.gnlgy\"")
+                .body(payload);
+    }
+
+    @GetMapping("/export/native/{treeId}")
+    public ResponseEntity<Map<String, Object>> exportNative(@PathVariable String treeId) {
+        FamilyTree tree = store.findTree(treeId);
+        if (tree == null) return ResponseEntity.notFound().build();
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("format", "gnlgy");
+        payload.put("version", 1);
+        payload.put("trees", List.of(tree));
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + sanitizeFilename(tree.getName()) + ".gnlgy\"")
+                .body(payload);
+    }
+
+    @PostMapping("/import/native")
+    public ResponseEntity<List<FamilyTree>> importNative(@RequestBody Map<String, Object> body) {
+        try {
+            if (!"gnlgy".equals(body.get("format"))) {
+                return ResponseEntity.badRequest().build();
+            }
+            Gson gson = TreeStore.getGson();
+            Type listType = new TypeToken<List<FamilyTree>>() {}.getType();
+            List<FamilyTree> imported = gson.fromJson(gson.toJson(body.get("trees")), listType);
+            if (imported == null || imported.isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+            // Regenerate tree IDs to avoid collisions
+            for (FamilyTree t : imported) {
+                t.setId(IdGenerator.generateTreeId());
+                store.importTree(t);
+            }
+            return ResponseEntity.ok(imported);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    private String sanitizeFilename(String name) {
+        return name.replaceAll("[^a-zA-Z0-9_\\-]", "_");
     }
 
     // === GEDCOM ===

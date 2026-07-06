@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTreeStore } from '../store/useTreeStore'
+import { api } from '../api'
 import { computeLayout } from '../utils/treeLayout'
 import { downloadGedcom } from '../utils/gedcomExporter'
 import { generatePersonId, generateFamilyId, createPerson } from '../utils/id'
@@ -201,6 +202,11 @@ export default function TreeView() {
     downloadGedcom(tree)
   }, [tree])
 
+  const handleExportNative = useCallback(() => {
+    if (!tree) return
+    api.exportNative(tree.id, tree.name)
+  }, [tree])
+
   const handleAddPerson = useCallback(() => {
     if (!tree) return
     const np = { id: generatePersonId(), firstName: '', lastName: '', gender: 'other' as const }
@@ -262,6 +268,7 @@ export default function TreeView() {
           onAddPerson={handleAddPerson}
           onAddFamily={handleAddFamily}
           onExport={handleExport}
+          onExportNative={handleExportNative}
           onBack={() => navigate('/')}
           treeName={tree.name}
         />

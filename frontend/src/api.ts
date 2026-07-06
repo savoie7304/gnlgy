@@ -70,7 +70,47 @@ export const api = {
     if (!res.ok) throw new Error('Import failed')
     return res.json()
   },
-  exportGedcom: (treeId: string) => {
-    window.open(`${BASE}/trees/${treeId}/export/gedcom`, '_blank')
+  exportGedcom: async (treeId: string) => {
+    const res = await fetch(`${BASE}/trees/${treeId}/export/gedcom`)
+    const blob = await res.blob()
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'export.ged'
+    a.click()
+    URL.revokeObjectURL(url)
+  },
+
+  // Native .gnlgy
+  exportNativeAll: async () => {
+    const res = await fetch(`${BASE}/export/native`)
+    const blob = await res.blob()
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'sauvegarde.gnlgy'
+    a.click()
+    URL.revokeObjectURL(url)
+  },
+  exportNative: async (treeId: string, treeName: string) => {
+    const res = await fetch(`${BASE}/export/native/${treeId}`)
+    const blob = await res.blob()
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${treeName}.gnlgy`
+    a.click()
+    URL.revokeObjectURL(url)
+  },
+  importNative: async (file: File): Promise<any> => {
+    const text = await file.text()
+    const data = JSON.parse(text)
+    const res = await fetch(`${BASE}/import/native`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+    if (!res.ok) throw new Error('Import failed')
+    return res.json()
   },
 }

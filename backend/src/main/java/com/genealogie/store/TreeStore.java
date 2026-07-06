@@ -15,8 +15,8 @@ public class TreeStore {
 
     private static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
-            .registerTypeAdapter(Gender.class, (JsonSerializer<Gender>) (src, type, context) -> new JsonPrimitive(src.name()))
-            .registerTypeAdapter(Gender.class, (JsonDeserializer<Gender>) (json, type, context) -> Gender.valueOf(json.getAsString()))
+            .registerTypeAdapter(Gender.class, (JsonSerializer<Gender>) (src, type, context) -> new JsonPrimitive(src.name().toLowerCase()))
+            .registerTypeAdapter(Gender.class, (JsonDeserializer<Gender>) (json, type, context) -> Gender.fromJson(json.getAsString()))
             .create();
 
     private List<FamilyTree> trees;
@@ -31,6 +31,10 @@ public class TreeStore {
 
     public static TreeStore getInstance() {
         return INSTANCE;
+    }
+
+    public static Gson getGson() {
+        return GSON;
     }
 
     private void notifyChange() {
