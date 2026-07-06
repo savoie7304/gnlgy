@@ -1,10 +1,10 @@
 # 🌳 Généalogie
 
-Je ne trouvais aucune application d'arbre généalogique qui tenait la route, alors j'ai fait la mienne. Et ça marche !
+Je ne trouvais aucune application d'arbre généalogique qui tenait la route, alors j'ai fait la mienne : GNLGY. Et ça marche !
 
 ## 🏗️ Architecture
 
-Encapsuler une stack Web moderne dans une application de bureau native via Electron,  backend local robuste en Java pour gérer la logique lourde et les exports.
+Encapsuler une stack Web moderne dans une application de bureau native via Electron,  backend local robuste en Java.
 
 ```
 ┌──────────────────────────────────────────┐
