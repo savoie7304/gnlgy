@@ -1,6 +1,6 @@
 # Généalogie
 
-Application de généalogie de bureau — arbre familial interactif avec un backend Spring Boot et une interface React, le tout embarqué dans une fenêtre Electron.
+Je ne trouvais aucune application d'arbre généalogique qui tenait la route, alors j'ai fait la mienne
 
 ![Aperçu](screenshot.png)
 
@@ -10,10 +10,10 @@ Application de généalogie de bureau — arbre familial interactif avec un back
 ┌──────────────────────────────────────────┐
 │              Electron Window             │
 │  ┌────────────────────────────────────┐  │
-│  │      React + Vite + Tailwind      │  │
+│  │      React + Vite + Tailwind       │  │
 │  │  (frontend/)                       │  │
 │  └──────────────┬─────────────────────┘  │
-│                 │ HTTP (localhost)        │
+│                 │ HTTP (localhost)       │
 │  ┌──────────────▼─────────────────────┐  │
 │  │      Spring Boot 3 (backend/)      │  │
 │  │  API REST /api/*                   │  │
