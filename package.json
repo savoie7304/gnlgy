@@ -1,0 +1,12 @@
+{
+  "name": "genealogie-app",
+  "author": "Maxime",
+  "private": true,
+  "scripts": {
+    "dev:backend": "cd backend && mvn spring-boot:run",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev": "cd electron && GENEALOGIE_DEV=true npm start",
+    "build": "bash scripts/build.sh",
+    "start": "cd electron && npm start"
+  }
+}

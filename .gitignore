@@ -1,0 +1,22 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Build artifacts
+backend/target/
+frontend/dist/
+electron/genealogie.jar
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.iml
+*.swp
+
+# Env
+.env
+.env.local
