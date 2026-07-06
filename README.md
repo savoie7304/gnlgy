@@ -36,7 +36,7 @@ Encapsuler une stack Web moderne dans une application de bureau native via Elect
 ```bash
 # 1. Cloner le projet
 git clone https://github.com/savoie7304/gnlgy.git
-cd genealogie
+cd gnlgy
 
 # 2. Installer (Front & Desktop)
 cd frontend && npm install && cd ..
