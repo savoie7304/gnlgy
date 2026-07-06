@@ -68,11 +68,28 @@ Utilisation du Hot Module Replacement (HMR) de Vite, chaque modification de styl
 
 ### Build de production
 
-Pour packager l'application proprement, mon script racine compile le front, génère le JAR exécutable et rassemble le tout dans le dossier `electron/` :
+Pour packager l'application proprement, le script racine compile le front, génère le JAR exécutable et rassemble le tout dans le dossier `electron/` :
 
 ```bash
 npm run build
 ```
+
+### 📦 Distribuer un exécutable
+
+```bash
+npm run dist
+```
+
+Génère un fichier autonome dans `electron/dist/` selon ta plateforme :
+
+| Plateforme | Fichier | Type |
+|---|---|---|
+| Linux | `Généalogie-1.0.0.AppImage` | Portable — un seul fichier, zéro installation |
+| macOS | `Généalogie-1.0.0.dmg` | Image disque à monter |
+| Windows | `Généalogie Setup 1.0.0.exe` | Installateur |
+| Windows | `Généalogie 1.0.0.exe` | Portable — comme une AppImage, cliques et ça marche |
+
+L'option **portable** (Windows) fonctionne comme l'AppImage Linux : aucun installeur, aucun répertoire système modifié, tu le poses où tu veux et tu le lances.
 
 ## 💾 Stockage des données
 

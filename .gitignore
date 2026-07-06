@@ -6,6 +6,8 @@ npm-debug.log*
 backend/target/
 frontend/dist/
 electron/genealogie.jar
+electron/dist/
+*.gnlgy
 
 # OS
 .DS_Store
